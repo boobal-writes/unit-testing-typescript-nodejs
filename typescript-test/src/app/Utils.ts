@@ -28,3 +28,6 @@ export function getStringInfo(arg: string): StringInfo {
     extraInfo: {},
   };
 }
+
+/* istanbul ignore next */
+export function obsoleteMethod() {}
