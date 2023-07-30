@@ -17,6 +17,26 @@ describe("Utils test suite", () => {
 
       expect(actual).toBe(expected);
     });
+
+    it("should throw error when invalid argument is passed", () => {
+      expect(() => {
+        stringUtils.toUpperCase(undefined);
+      }).toThrow();
+      expect(() => {
+        stringUtils.toUpperCase(undefined);
+      }).toThrowError("Invalid argument!");
+    });
+
+    it("should throw error when invalid argument is passed, try catch approach", (done) => {
+      try {
+        stringUtils.toUpperCase("");
+        done("Should throw error when invalid argument is passed");
+      } catch (actualError) {
+        expect(actualError).toBeInstanceOf(Error);
+        expect(actualError).toHaveProperty("message", "Invalid argument!");
+        done();
+      }
+    });
   });
 
   describe("toUpperCase", () => {
