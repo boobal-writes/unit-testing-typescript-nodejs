@@ -89,4 +89,10 @@ describe("Utils test suite", () => {
       expect(actual.extraInfo).toBeTruthy;
     });
   });
+  describe("Test properties - skip, todo", () => {
+    it.skip("Should skip this test", () => {});
+    xit("Should skip this too", () => {});
+    it("Should run this test", () => {});
+    it.todo("Should mark this as todo");
+  });
 });
