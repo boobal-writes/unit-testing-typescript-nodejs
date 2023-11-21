@@ -34,4 +34,33 @@ describe("OtherUtils", () => {
       expect(actual).toBe("ABC");
     });
   });
+
+  describe("toUpperCaseWithCallback - custom made mocks", () => {
+    let callbackArguments = [];
+    let timesCalled = 0;
+
+    function customMockCallbackFunction(arg: string) {
+      callbackArguments.push(arg);
+      timesCalled++;
+    }
+    afterEach(() => {
+      callbackArguments = [];
+      timesCalled = 0;
+    });
+    it("for invalid argument, it should return undefined", () => {
+      const actual = toUpperCaseWithCallback("", customMockCallbackFunction);
+
+      expect(actual).toBeUndefined();
+      expect(callbackArguments).toContain("Invalid argument");
+      expect(timesCalled).toBe(1);
+    });
+
+    it("for valid argument, it should return uppercase", () => {
+      const actual = toUpperCaseWithCallback("abc", customMockCallbackFunction);
+
+      expect(actual).toBe("ABC");
+      expect(callbackArguments).toContain("Function called with argument abc");
+      expect(timesCalled).toBe(1);
+    });
+  });
 });
