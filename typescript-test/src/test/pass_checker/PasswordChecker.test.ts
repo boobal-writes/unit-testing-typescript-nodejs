@@ -8,36 +8,63 @@ describe("Password checker test suite", () => {
   beforeEach(() => {
     passwordChecker = new PasswordChecker();
   });
-  it("should return false, when password is having less than 8 characters", () => {
-    const password = "abcd";
 
-    const actualResult = passwordChecker.checkPassword(password);
+  describe("checkPassword", () => {
+    it("should return false, when password is having less than 8 characters", () => {
+      const password = "abcd";
 
-    expect(actualResult.valid).toBe(false);
-    expect(actualResult.reasons).toContain(PasswordError.SHORT);
+      const actualResult = passwordChecker.checkPassword(password);
+
+      expect(actualResult.valid).toBe(false);
+      expect(actualResult.reasons).toContain(PasswordError.SHORT);
+    });
+
+    it("should return true, when valid password is passed", () => {
+      const password = "Abcdefgh";
+
+      const actualResult = passwordChecker.checkPassword(password);
+
+      expect(actualResult.valid).toBe(true);
+      expect(actualResult.reasons).toHaveLength(0);
+    });
+
+    it("should return false, when password with no upper case is passed", () => {
+      const password = "abcdefgh";
+
+      const actualResult = passwordChecker.checkPassword(password);
+
+      expect(actualResult.valid).toBe(false);
+      expect(actualResult.reasons).toContain(PasswordError.NO_UPPER_CASE);
+    });
+
+    it("should return false, when password with no lower case is passed", () => {
+      const password = "ABCDEFGH";
+
+      const actualResult = passwordChecker.checkPassword(password);
+
+      expect(actualResult.valid).toBe(false);
+      expect(actualResult.reasons).toContain(PasswordError.NO_LOWER_CASE);
+    });
   });
-  it("should return true, when valid password is passed", () => {
-    const password = "Abcdefgh";
 
-    const actualResult = passwordChecker.checkPassword(password);
+  describe("checkAdminPassword", () => {
+    it("should return false, when number is passed", () => {
+      const password = "Abcdefgh";
 
-    expect(actualResult.valid).toBe(true);
-    expect(actualResult.reasons).toHaveLength(0);
-  });
-  it("should return false, when password with no upper case is passed", () => {
-    const password = "abcdefgh";
+      const actualResult = passwordChecker.checkAdminPassword(password);
 
-    const actualResult = passwordChecker.checkPassword(password);
+      expect(actualResult.valid).toBe(false);
+      expect(actualResult.reasons).toHaveLength(1);
+      expect(actualResult.reasons).toContain(PasswordError.NO_NUMBER);
+    });
 
-    expect(actualResult.valid).toBe(false);
-    expect(actualResult.reasons).toContain(PasswordError.NO_UPPER_CASE);
-  });
-  it("should return false, when password with no lower case is passed", () => {
-    const password = "ABCDEFGH";
+    it("should return true, when valid password is passed", () => {
+      const password = "Abcdefg1";
 
-    const actualResult = passwordChecker.checkPassword(password);
+      const actualResult = passwordChecker.checkAdminPassword(password);
 
-    expect(actualResult.valid).toBe(false);
-    expect(actualResult.reasons).toContain(PasswordError.NO_LOWER_CASE);
+      expect(actualResult.valid).toBe(true);
+      expect(actualResult.reasons).toHaveLength(0);
+    });
   });
 });
