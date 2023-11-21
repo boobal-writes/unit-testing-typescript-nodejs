@@ -1,5 +1,8 @@
 import { StringInfo } from "../../app/Utils";
-import { calculateComplexity } from "../../doubles/OtherUtils";
+import {
+  calculateComplexity,
+  toUpperCaseWithCallback,
+} from "../../doubles/OtherUtils";
 
 describe("OtherUtils", () => {
   describe("calculateComplexity - stubs", () => {
@@ -15,6 +18,20 @@ describe("OtherUtils", () => {
       const actualComplexity = calculateComplexity(stringInfo);
 
       expect(actualComplexity).toBe(10);
+    });
+  });
+
+  describe("toUpperCaseWithCallback - fakes", () => {
+    it("for invalid argument, it should return undefined", () => {
+      const actual = toUpperCaseWithCallback("", () => {});
+
+      expect(actual).toBeUndefined();
+    });
+
+    it("for valid argument, it should return uppercase", () => {
+      const actual = toUpperCaseWithCallback("abc", () => {});
+
+      expect(actual).toBe("ABC");
     });
   });
 });
