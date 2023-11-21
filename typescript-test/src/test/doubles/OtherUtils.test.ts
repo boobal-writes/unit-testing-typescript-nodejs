@@ -43,10 +43,12 @@ describe("OtherUtils", () => {
       callbackArguments.push(arg);
       timesCalled++;
     }
+
     afterEach(() => {
       callbackArguments = [];
       timesCalled = 0;
     });
+
     it("for invalid argument, it should return undefined", () => {
       const actual = toUpperCaseWithCallback("", customMockCallbackFunction);
 
@@ -61,6 +63,32 @@ describe("OtherUtils", () => {
       expect(actual).toBe("ABC");
       expect(callbackArguments).toContain("Function called with argument abc");
       expect(timesCalled).toBe(1);
+    });
+  });
+
+  describe("toUpperCaseWithCallback - jest mocks", () => {
+    const jestMockFunction = jest.fn();
+
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it("for invalid argument, it should return undefined", () => {
+      const actual = toUpperCaseWithCallback("", jestMockFunction);
+
+      expect(actual).toBeUndefined();
+      expect(jestMockFunction).toBeCalledWith("Invalid argument");
+      expect(jestMockFunction).toBeCalledTimes(1);
+    });
+
+    it("for valid argument, it should return uppercase", () => {
+      const actual = toUpperCaseWithCallback("abc", jestMockFunction);
+
+      expect(actual).toBe("ABC");
+      expect(jestMockFunction).toBeCalledWith(
+        "Function called with argument abc"
+      );
+      expect(jestMockFunction).toBeCalledTimes(1);
     });
   });
 });
