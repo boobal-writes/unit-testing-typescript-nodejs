@@ -8,10 +8,32 @@ export interface CheckResult {
   reasons: PasswordError[];
 }
 export class PasswordChecker {
-  public checkPassword(password: string): boolean {
-    if (password.length < 8) return false;
-    if (password == password.toLowerCase()) return false;
-    if (password == password.toUpperCase()) return false;
-    return true;
+  public checkPassword(password: string): CheckResult {
+    const reasons: PasswordError[] = [];
+    this.checkForLength(password, reasons);
+    this.checkForLowerCase(password, reasons);
+    this.checkForUpperCase(password, reasons);
+    return {
+      valid: reasons.length > 0 ? false : true,
+      reasons: reasons,
+    };
+  }
+
+  private checkForUpperCase(password: string, reasons: PasswordError[]) {
+    if (password == password.toUpperCase()) {
+      reasons.push(PasswordError.NO_LOWER_CASE);
+    }
+  }
+
+  private checkForLowerCase(password: string, reasons: PasswordError[]) {
+    if (password == password.toLowerCase()) {
+      reasons.push(PasswordError.NO_UPPER_CASE);
+    }
+  }
+
+  private checkForLength(password: string, reasons: PasswordError[]) {
+    if (password.length < 8) {
+      reasons.push(PasswordError.SHORT);
+    }
   }
 }
