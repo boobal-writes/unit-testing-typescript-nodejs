@@ -1,5 +1,6 @@
 import { StringInfo } from "../../app/Utils";
 import {
+  OtherStringUtils,
   calculateComplexity,
   toUpperCaseWithCallback,
 } from "../../doubles/OtherUtils";
@@ -89,6 +90,38 @@ describe("OtherUtils", () => {
         "Function called with argument abc"
       );
       expect(jestMockFunction).toBeCalledTimes(1);
+    });
+  });
+
+  describe("OtherStringUtils - spies", () => {
+    let sut: OtherStringUtils;
+
+    beforeEach(() => {
+      sut = new OtherStringUtils();
+    });
+
+    it("spy on toUpperCase", () => {
+      const toUpperCaseSpy = jest.spyOn(sut, "toUpperCase");
+
+      sut.toUpperCase("abc");
+
+      expect(toUpperCaseSpy).toBeCalledWith("abc");
+    });
+
+    it("spy on console log", () => {
+      const consoleLogSpy = jest.spyOn(console, "log");
+
+      sut.logString("abc");
+
+      expect(consoleLogSpy).toBeCalledWith("abc");
+    });
+
+    it("spy and replace a method implementation", () => {
+      jest.spyOn(sut as any, "callExternalService").mockImplementation(() => {
+        console.log("calling mock implementation");
+      });
+
+      sut.doWork();
     });
   });
 });
