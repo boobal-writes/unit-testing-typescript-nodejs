@@ -3,7 +3,7 @@ import {
   OtherStringUtils,
   calculateComplexity,
   toUpperCaseWithCallback,
-} from "../../doubles/OtherUtils";
+} from "../../app/doubles/OtherUtils";
 
 describe("OtherUtils", () => {
   describe("calculateComplexity - stubs", () => {
