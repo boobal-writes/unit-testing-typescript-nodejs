@@ -11,6 +11,7 @@ jest.mock("../../app/server_app/data/DataBase");
 
 const requestWrapper = new RequestTestWrapper();
 const responseWrapper = new ResponseTestWrapper();
+const jsonHeader = { "Content-Type": "application/json" };
 
 const fakeServer = {
   listen: () => {},
@@ -23,23 +24,43 @@ jest.mock("http", () => ({
     return fakeServer;
   },
 }));
+const getBySpy = jest.spyOn(DataBase.prototype, "getBy");
+const insertSpy = jest.spyOn(DataBase.prototype, "insert");
+describe("Reservation Request test suite", () => {
+  const someTokenId = "Token123";
+  const someReservationId = "Reservation123";
 
-describe("RegisterRequests test suite", () => {
+  const someSessionToken = {
+    id: "string",
+    userName: "someUserName",
+    valid: "true",
+    expirationDate: "2023-11-24",
+  };
+  beforeEach(() => {
+    requestWrapper.headers = {
+      authorization: "someTokenId",
+      "user-agent": "jest tests",
+    };
+    getBySpy.mockResolvedValueOnce(someSessionToken);
+  });
+
   afterEach(() => {
     requestWrapper.clearFields();
     responseWrapper.clearFields();
     jest.clearAllMocks();
   });
 
-  it("should register new user", async () => {
+  it("should should create a reservation", async () => {
     requestWrapper.method = HTTP_METHODS.POST;
-    requestWrapper.url = "localhost:8080/register";
+    requestWrapper.url = "localhost:8080/reservation";
     requestWrapper.body = {
-      userName: "someUserName",
-      password: "somePassword",
+      room: "someRoom",
+      user: "someUser",
+      startDate: "2023-11-24",
+      endDate: "2023-11-25",
     };
 
-    jest.spyOn(DataBase.prototype, "insert").mockResolvedValueOnce("1234");
+    insertSpy.mockResolvedValueOnce(someReservationId);
 
     await new Server().startServer();
 
@@ -48,33 +69,9 @@ describe("RegisterRequests test suite", () => {
     expect(responseWrapper.statusCode).toBe(HTTP_CODES.CREATED);
     expect(responseWrapper.body).toEqual(
       expect.objectContaining({
-        userId: expect.any(String),
+        reservationId: someReservationId,
       })
     );
-  });
-
-  it("should reject invalid register request", async () => {
-    requestWrapper.method = HTTP_METHODS.POST;
-    requestWrapper.url = "localhost:8080/register";
-    requestWrapper.body = {};
-
-    await new Server().startServer();
-
-    await new Promise(process.nextTick);
-
-    expect(responseWrapper.statusCode).toBe(HTTP_CODES.BAD_REQUEST);
-    expect(responseWrapper.body).toBe("userName and password required");
-  });
-
-  it("should do nothing for not supported methods", async () => {
-    requestWrapper.method = HTTP_METHODS.PUT;
-    requestWrapper.url = "localhost:8080/register";
-    requestWrapper.body = {};
-
-    await new Server().startServer();
-
-    await new Promise(process.nextTick);
-
-    expect(responseWrapper.statusCode).toBeUndefined();
+    expect(responseWrapper.headers).toContainEqual(jsonHeader);
   });
 });
