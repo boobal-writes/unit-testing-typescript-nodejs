@@ -6,6 +6,8 @@
   "scripts": {
     "test": "jest",
     "test-watch": "jest --watch",
+    "testIntegration": "jest --config integration-jest.config.ts",
+    "testIntegration-watch": "jest --config integration-jest.config.ts --watch",
     "start": "ts-node src/app/server_app/Launcher.ts"
   },
   "keywords": [],
