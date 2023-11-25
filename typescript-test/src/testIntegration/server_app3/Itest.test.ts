@@ -1,3 +1,4 @@
+import * as IdGenerator from "../../app/server_app/data/IdGenerator";
 import { Reservation } from "../../app/server_app/model/ReservationModel";
 import {
   HTTP_CODES,
@@ -100,5 +101,25 @@ describe("Server app integration tests", () => {
 
     expect(result.status).toBe(HTTP_CODES.OK);
     expect(resultBody).toEqual(expectedReservation);
+  });
+
+  it("snapshot test", async () => {
+    jest.spyOn(IdGenerator, "generateRandomId").mockReturnValueOnce("12345");
+    await fetch("http://localhost:8080/reservation", {
+      method: HTTP_METHODS.POST,
+      headers: {
+        authorization: token,
+      },
+      body: JSON.stringify(someReservation),
+    });
+
+    const result = await fetch(`http://localhost:8080/reservation/12345`, {
+      method: HTTP_METHODS.GET,
+      headers: {
+        authorization: token,
+      },
+    });
+    const requestBody = await result.json();
+    expect(requestBody).toMatchSnapshot();
   });
 });
