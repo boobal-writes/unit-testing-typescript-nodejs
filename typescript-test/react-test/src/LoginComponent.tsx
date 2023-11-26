@@ -1,5 +1,5 @@
-import { SyntheticEvent, useState } from 'react';
-import LoginService from './services/LoginService';
+import { SyntheticEvent, useState } from "react";
+import LoginService from "./services/LoginService";
 
 type LoginProps = {
   loginService: LoginService;
@@ -7,49 +7,53 @@ type LoginProps = {
 };
 
 function LoginComponent({ loginService, setToken }: LoginProps) {
-  const [userName, setUserName] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [loginResult, setLoginResult] = useState<string>('');
+  const [userName, setUserName] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [loginResult, setLoginResult] = useState<string>("");
 
-  const handleSubmit = async (event: SyntheticEvent) =>{
+  const handleSubmit = async (event: SyntheticEvent) => {
     event.preventDefault();
     if (userName && password) {
-        const loginResponse = await loginService.login(userName, password);
-        if (loginResponse) {
-          setLoginResult('successful login')
-          setToken(loginResponse)
-        } else {
-          setLoginResult('invalid credentials')
-        }
+      const loginResponse = await loginService.login(userName, password);
+      if (loginResponse) {
+        setLoginResult("successful login");
+        setToken(loginResponse);
+      } else {
+        setLoginResult("invalid credentials");
+      }
     } else {
-      setLoginResult('UserName and password required!')
+      setLoginResult("UserName and password required!");
     }
-  }
+  };
 
-  function renderLoginResult(){
+  function renderLoginResult() {
     if (loginResult) {
-      return <label data-testid='resultLabel'>{loginResult}</label>
+      return <label data-testid="resultLabel">{loginResult}</label>;
     }
   }
-
 
   return (
-    <div role='main'>
+    <div role="main">
       <h2>Please login</h2>
       <form onSubmit={(e) => handleSubmit(e)}>
         <label>User name</label>
-        <input data-testid='input'
+        <input
+          data-testid="login-username"
           value={userName}
           onChange={(e) => setUserName(e.target.value)}
-        /><br/>
+        />
+        <br />
         <label>Password</label>
-        <input data-testid='input'
+        <input
+          data-testid="login-password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          type='password'
-        /><br/>
-        <input data-testid='input' type='submit' value='Login' />
-      </form><br/>
+          type="password"
+        />
+        <br />
+        <input data-testid="login-submit" type="submit" value="Login" />
+      </form>
+      <br />
       {renderLoginResult()}
     </div>
   );
