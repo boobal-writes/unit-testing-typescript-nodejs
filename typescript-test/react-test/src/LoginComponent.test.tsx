@@ -18,6 +18,10 @@ describe("LoginComponent test suite", () => {
     user.click(element);
   }
 
+  function type(element: HTMLElement, value: string) {
+    user.type(element, value);
+  }
+
   beforeEach(() => {
     setUp();
   });
@@ -56,7 +60,46 @@ describe("LoginComponent test suite", () => {
     });
 
     const resultLabel = screen.getByTestId("resultLabel");
-    expect(resultLabel).toBeInTheDocument();
     expect(resultLabel.textContent).toBe("UserName and password required!");
+  });
+
+  it("correct credentials - successful login - fireEvent", async () => {
+    loginServiceMock.login.mockResolvedValueOnce("1234");
+
+    const userNameInput = screen.getByTestId("login-username");
+    const passwordInput = screen.getByTestId("login-password");
+    const submitButton = screen.getByTestId("login-submit");
+
+    fireEvent.change(userNameInput, { target: { value: "someUserName" } });
+    fireEvent.change(passwordInput, { target: { value: "somePassword" } });
+    fireEvent.click(submitButton);
+
+    const resultLabel = await screen.findByTestId("resultLabel");
+    expect(resultLabel.textContent).toBe("successful login");
+    expect(loginServiceMock.login).toBeCalledWith(
+      "someUserName",
+      "somePassword"
+    );
+  });
+
+  it("correct credentials - successful login - user", async () => {
+    loginServiceMock.login.mockResolvedValueOnce("1234");
+
+    const userNameInput = screen.getByTestId("login-username");
+    const passwordInput = screen.getByTestId("login-password");
+    const submitButton = screen.getByTestId("login-submit");
+
+    act(() => {
+      type(userNameInput, "someUserName");
+      type(passwordInput, "somePassword");
+      clickElement(submitButton);
+    });
+
+    const resultLabel = await screen.findByTestId("resultLabel");
+    expect(resultLabel.textContent).toBe("successful login");
+    expect(loginServiceMock.login).toBeCalledWith(
+      "someUserName",
+      "somePassword"
+    );
   });
 });
